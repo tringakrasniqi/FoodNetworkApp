@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Food Network</string>
+    <string name="msg_no_meal_types">There are no meal types to show right now. Refresh.</string>
+    <string name="msg_no_meals">There are no meals to show right now. Refresh.</string>
+    <string name="add_meal">Add Meal</string>
+    <string name="title">Title</string>
+    <string name="recipe">Recipe</string>
+    <string name="number_of_servings">Number of Servings</string>
+    <string name="prep_time">Prep Time</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="msg_meal_uploaded">Meal uploaded to server successfully. Click to view.</string>
+    <string name="meal_uploaded">Meal Uploaded</string>
+    <string name="prep_time_w_placeholder">%1$d:%2$d</string>
+    <string name="required">Required</string>
+    <string name="nothing_is_made_in_no_time">Nothing is made in no time! :)</string>
+    <string name="upvote_header">Upvotes: </string>
+
+    <!--Activity Titles-->
+    <string name="main_activity_title">Meal Types</string>
+    <string name="meal_details_title">Meal Details</string>
+    <string name="meals_title">Meals</string>
+    <string name="create_meal_title">Create new meal</string>
+
+    <!--toolbar action-->
+    <string name="add_meal_btn">Add Meal</string>
+    <string name="upvote_btn">Upvote</string>
+
+    <string name="meal_upvote_w_placeholder">%1$d</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
