@@ -3,7 +3,6 @@ package gr.academic.city.sdmd.foodnetwork.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -12,7 +11,6 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,19 +18,17 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import gr.academic.city.sdmd.foodnetwork.R;
 import gr.academic.city.sdmd.foodnetwork.db.FoodNetworkContract;
 import gr.academic.city.sdmd.foodnetwork.service.MealService;
-import gr.academic.city.sdmd.foodnetwork.service.MealTypeService;
-import gr.academic.city.sdmd.foodnetwork.ui.fragment.MealDetailsFragment;
-import gr.academic.city.sdmd.foodnetwork.ui.fragment.MealListFragment;
+//import gr.academic.city.sdmd.foodnetwork.ui.fragment.MealDetailsFragment;
+//import gr.academic.city.sdmd.foodnetwork.ui.fragment.MealListFragment;
 
 /**
  * Created by trumpets on 4/24/17.
  */
-public class MealsActivity extends ToolBarActivity implements LoaderManager.LoaderCallbacks<Cursor>, MealDetailsFragment.OnFragmentInteractionListener {
+public class MealsActivity extends ToolBarActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final String EXTRA_MEAL_TYPE_SERVER_ID = "meal_type_server_id";
     private static final String TAG_LOG = "MEALS ACTIVITY";
@@ -225,10 +221,10 @@ public class MealsActivity extends ToolBarActivity implements LoaderManager.Load
         new FetchMealsAsyncTask().execute(mealTypeServerId);
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
+//    @Override
+//    public void onFragmentInteraction(Uri uri) {
+//
+//    }
 
     private class FetchMealsAsyncTask extends AsyncTask<Long, Void, Void> {
 

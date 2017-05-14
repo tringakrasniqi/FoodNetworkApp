@@ -36,7 +36,7 @@ import gr.academic.city.sdmd.foodnetwork.service.MealService;
  */
 public class MealDetailsActivity extends ToolBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final String EXTRA_MEAL_ID = "meal_id";
+    public static final String EXTRA_MEAL_ID = "meal_id";
 
     private static final int MEAL_LOADER = 20;
 

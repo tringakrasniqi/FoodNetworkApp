@@ -1,17 +1,14 @@
 package gr.academic.city.sdmd.foodnetwork.ui.activity;
 
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -19,9 +16,9 @@ import android.widget.ListView;
 import gr.academic.city.sdmd.foodnetwork.R;
 import gr.academic.city.sdmd.foodnetwork.db.FoodNetworkContract;
 import gr.academic.city.sdmd.foodnetwork.service.MealTypeService;
-import gr.academic.city.sdmd.foodnetwork.ui.fragment.MealListFragment;
+//import gr.academic.city.sdmd.foodnetwork.ui.fragment.MealListFragment;
 
-public class MainActivity extends ToolBarActivity implements LoaderManager.LoaderCallbacks<Cursor>, MealListFragment.OnFragmentInteractionListener {
+public class MainActivity extends ToolBarActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final String[] PROJECTION = {
             FoodNetworkContract.MealType._ID,
@@ -125,20 +122,20 @@ public class MainActivity extends ToolBarActivity implements LoaderManager.Loade
         new FetchMealTypesAsyncTask().execute();
     }
 
-    @Override
-    public void onMealItemSelected(Uri uri) {
-        View fragmentContainer = findViewById(R.id.frag_meals_list);
-        boolean isDualPane = fragmentContainer != null &&
-                fragmentContainer.getVisibility() == View.VISIBLE;
-
-        if (isDualPane) {
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.frag_meals_list, MealListFragment.newInstance(studentLocationInList));
-            fragmentTransaction.commit();
-        } else {
-            startActivity(StudentDetailsActivity.getStartIntent(this, studentLocationInList));
-        }
-    }
+//    @Override
+//    public void onMealItemSelected(Uri uri) {
+//        View fragmentContainer = findViewById(R.id.frag_meals_list);
+//        boolean isDualPane = fragmentContainer != null &&
+//                fragmentContainer.getVisibility() == View.VISIBLE;
+//
+//        if (isDualPane) {
+//            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//            fragmentTransaction.replace(R.id.frag_meals_list, MealListFragment.newInstance(studentLocationInList));
+//            fragmentTransaction.commit();
+//        } else {
+//            startActivity(StudentDetailsActivity.getStartIntent(this, studentLocationInList));
+//        }
+//    }
 
     private class FetchMealTypesAsyncTask extends AsyncTask<Long, Void, Void> {
 
