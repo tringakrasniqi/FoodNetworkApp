@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.TimePicker;
 
 import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +22,6 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
-import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
@@ -47,8 +45,6 @@ public class CreateMealTest {
 
         ViewInteraction perform = onView(isAssignableFrom(TimePicker.class)).perform(setTime(0,15));
         onView(withText("OK")).perform(click());
-
-        onView(withClassName(Matchers.equalTo(TimePicker.class.getName())));
         onView(withId(R.id.btn_ok)).perform(click());
 
     }
