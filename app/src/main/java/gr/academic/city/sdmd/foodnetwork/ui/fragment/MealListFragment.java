@@ -2,38 +2,29 @@ package gr.academic.city.sdmd.foodnetwork.ui.fragment;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import gr.academic.city.sdmd.foodnetwork.R;
 import gr.academic.city.sdmd.foodnetwork.db.FoodNetworkContract;
-import gr.academic.city.sdmd.foodnetwork.domain.Meal;
 import gr.academic.city.sdmd.foodnetwork.service.MealService;
-import gr.academic.city.sdmd.foodnetwork.ui.activity.MealDetailsActivity;
-import gr.academic.city.sdmd.foodnetwork.ui.activity.MealsActivity;
 
 public class MealListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, MealDetailsFragment.OnFragmentInteractionListener{
 
-    private static final String LOG_TAG = "MEAL LIST FRAGMENT";
     private static final String[] PROJECTION = {
             FoodNetworkContract.Meal._ID,
             FoodNetworkContract.Meal.COLUMN_TITLE,
@@ -67,7 +58,6 @@ public class MealListFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(LOG_TAG, "ARGUMENTS ----- " + getArguments());
         if (getArguments() != null) {
             mealTypeId = getArguments().getLong("meal_type_server_id", -1);
         }
@@ -79,7 +69,6 @@ public class MealListFragment extends Fragment implements LoaderManager.LoaderCa
         super.onActivityCreated(savedInstanceState);
 
         if(mealTypeId > 0) {
-            Log.d(LOG_TAG, "on activity created");
 
             swipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_refresh);
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -112,7 +101,6 @@ public class MealListFragment extends Fragment implements LoaderManager.LoaderCa
                     } else {
                         return false;
                     }
-
                 }
             });
 
@@ -123,9 +111,7 @@ public class MealListFragment extends Fragment implements LoaderManager.LoaderCa
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Cursor cursor = adapter.getCursor();
                     if (cursor.moveToPosition(position)) {
-                        Log.d(LOG_TAG, "list item selected");
                         mListener.onMealItemSelected(cursor.getLong(cursor.getColumnIndexOrThrow(FoodNetworkContract.Meal._ID)));
-
                     }
                 }
             });
@@ -140,8 +126,6 @@ public class MealListFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.d(LOG_TAG, "ID  = " + id);
-        Log.d(LOG_TAG, "meal type ID = " + mealTypeId);
         switch (id) {
             case MEALS_LOADER:
                 return new CursorLoader(getActivity(),
@@ -171,14 +155,12 @@ public class MealListFragment extends Fragment implements LoaderManager.LoaderCa
         if (!swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(true);
         }
-
         new FetchMealsAsyncTask().execute(mealTypeId);
     }
 
     @Override
     public void onFragmentInteraction(long mealId) {
         mListener.onMealItemSelected(mealId);
-
     }
 
     private class FetchMealsAsyncTask extends AsyncTask<Long, Void, Void> {
@@ -186,7 +168,6 @@ public class MealListFragment extends Fragment implements LoaderManager.LoaderCa
         @Override
         protected Void doInBackground(Long... params) {
             MealService.startFetchMeals(getActivity(), params[0]);
-
             try {
                 // giving the service ample time to finish
                 Thread.sleep(1000);
@@ -207,7 +188,6 @@ public class MealListFragment extends Fragment implements LoaderManager.LoaderCa
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_meal_list, container, false);
     }
-
 
     public void onButtonPressed(long id) {
         if (mListener != null) {

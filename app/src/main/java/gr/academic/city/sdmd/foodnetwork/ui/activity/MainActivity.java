@@ -1,18 +1,14 @@
 package gr.academic.city.sdmd.foodnetwork.ui.activity;
 
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -20,8 +16,7 @@ import android.widget.ListView;
 import gr.academic.city.sdmd.foodnetwork.R;
 import gr.academic.city.sdmd.foodnetwork.db.FoodNetworkContract;
 import gr.academic.city.sdmd.foodnetwork.service.MealTypeService;
-import gr.academic.city.sdmd.foodnetwork.ui.fragment.MealDetailsFragment;
-import gr.academic.city.sdmd.foodnetwork.ui.fragment.MealListFragment;
+
 
 public class MainActivity extends ToolBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -30,8 +25,6 @@ public class MainActivity extends ToolBarActivity implements LoaderManager.Loade
             FoodNetworkContract.MealType.COLUMN_NAME,
             FoodNetworkContract.MealType.COLUMN_SERVER_ID
     };
-
-    public static final String LOG_TAG = "MAIN ACTIVITY";
 
     private static final String SORT_ORDER = FoodNetworkContract.MealType.COLUMN_PRIORITY + " ASC";
 

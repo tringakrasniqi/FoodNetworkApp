@@ -30,8 +30,6 @@ import static gr.academic.city.sdmd.foodnetwork.util.Commons.executeRequest;
  */
 public class PushToServerService extends IntentService {
 
-    public static final String LOG_TAG = "PushToServerService ";
-
     private static final int NOTIFICATION_ID = 187;
 
     private static final String ACTION_PUSH_MEALS_TO_SERVER = "gr.academic.city.sdmd.foodnetwork.ACTION_PUSH_MEALS_TO_SERVER";
@@ -69,11 +67,9 @@ public class PushToServerService extends IntentService {
 
     private void mealUpvoteToServer(){
 
-        Log.d(LOG_TAG, "upvoteToServer meal id" + mealServerId1);
         executeRequest(MessageFormat.format(Constants.MEAL_UPVOTE_URL, mealServerId1),Commons.ConnectionMethod.POST, null, new Commons.ResponseCallback() {
             @Override
             public void onResponse(int responseCode, String responsePayload){
-                Log.d(LOG_TAG, ""+ responseCode);
             }
         }
         );
@@ -105,8 +101,6 @@ public class PushToServerService extends IntentService {
                     ContentValues contentValues = new ContentValues();
                     contentValues.put(FoodNetworkContract.Meal.COLUMN_UPLOADED_TO_SERVER, 1);
                     contentValues.put(FoodNetworkContract.Meal.COLUMN_SERVER_ID, responsePayload);
-
-                    Log.d(LOG_TAG, ""+ contentValues);
 
                     getContentResolver().update(
                             ContentUris.withAppendedId(FoodNetworkContract.Meal.CONTENT_URI, mealDbId),

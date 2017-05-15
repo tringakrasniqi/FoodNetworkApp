@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -34,14 +33,11 @@ import java.util.Date;
 import gr.academic.city.sdmd.foodnetwork.R;
 import gr.academic.city.sdmd.foodnetwork.db.FoodNetworkContract;
 import gr.academic.city.sdmd.foodnetwork.service.MealService;
-import gr.academic.city.sdmd.foodnetwork.ui.activity.MealDetailsActivity;
 
 
 public class MealDetailsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final int MEAL_LOADER = 20;
-    public static final String LOG_TAG = "MEAL_DETAILS_FRAGMENT";
-
     private static final String ARG_MEAL_ID = "arg_meal_id";
 
     private TextView tvTitle;
@@ -60,7 +56,6 @@ public class MealDetailsFragment extends Fragment implements LoaderManager.Loade
     private OnFragmentInteractionListener mListener;
 
     public MealDetailsFragment() {
-        // Required empty public constructor
     }
 
     public static MealDetailsFragment newInstance(long mealId) {
@@ -80,7 +75,6 @@ public class MealDetailsFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.d(LOG_TAG, getArguments() + " -- ARGUMENTS -- ");
         if (getArguments() != null) {
             mealId = getArguments().getLong(ARG_MEAL_ID, -1);
         }
@@ -93,8 +87,6 @@ public class MealDetailsFragment extends Fragment implements LoaderManager.Loade
         tvUpvote = (TextView) getActivity().findViewById(R.id.tv_upvote);
         imgView = (ImageView) getActivity().findViewById(R.id.image);
         upvote_button = (Button) getActivity().findViewById(R.id.upvote_button);
-
-
         upvote_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 long mealServerId = 0;
@@ -110,12 +102,11 @@ public class MealDetailsFragment extends Fragment implements LoaderManager.Loade
                 MealService.startUpvoteMeal(getContext(), mealServerId);
             }
         });
-
         getLoaderManager().initLoader(MEAL_LOADER, null, this);
     }
 
 
-        @Override
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -173,7 +164,6 @@ public class MealDetailsFragment extends Fragment implements LoaderManager.Loade
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(long mealId);
     }
 
@@ -200,10 +190,8 @@ public class MealDetailsFragment extends Fragment implements LoaderManager.Loade
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            // fetch data
             new DownloadImageTask().execute(imageUrl);
         } else {
-            // display error
             Toast.makeText(getContext(), "Could not fetch image", Toast.LENGTH_SHORT).show();
         }
 
@@ -213,7 +201,6 @@ public class MealDetailsFragment extends Fragment implements LoaderManager.Loade
         @Override
         protected Bitmap doInBackground(String... urls) {
 
-            // params comes from the execute() call: params[0] is the url.
             try {
                 return downloadImage(urls[0]);
             } catch (IOException e) {
@@ -221,11 +208,9 @@ public class MealDetailsFragment extends Fragment implements LoaderManager.Loade
             }
         }
 
-        // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(Bitmap result) {
             if (result == null) {
-                Log.e(LOG_TAG, "Unable to retrieve image. URL may be invalid.");
                 return;
             }
 
@@ -244,21 +229,15 @@ public class MealDetailsFragment extends Fragment implements LoaderManager.Loade
             conn.setConnectTimeout(15000 /* milliseconds */);
             conn.setRequestMethod("GET");
             conn.setDoInput(true);
-
-            // Starts the query
             conn.connect();
 
             int response = conn.getResponseCode();
-            Log.d(LOG_TAG, "The response is: " + response);
             is = conn.getInputStream();
 
-            // Convert the InputStream into a bitmap
             Bitmap bitmap = BitmapFactory.decodeStream(is);
 
             return bitmap;
 
-            // Makes sure that the InputStream is closed after the app is
-            // finished using it.
         } finally {
             if (is != null) {
                 is.close();

@@ -23,8 +23,6 @@ import static gr.academic.city.sdmd.foodnetwork.util.Commons.executeRequest;
  */
 public class MealService extends IntentService {
 
-    private static final String LOG_TAG = "Meal Service";
-
     private static final String ACTION_FETCH_MEALS = "gr.academic.city.sdmd.foodnetwork.FETCH_MEALS";
     private static final String EXTRA_MEAL_TYPE_SERVER_ID = "meal_type_server_id";
 
@@ -99,9 +97,7 @@ public class MealService extends IntentService {
             getContentResolver().update(FoodNetworkContract.Meal.CONTENT_URI, contentValues,
                     FoodNetworkContract.Meal.COLUMN_MEAL_TYPE_SERVER_ID + " = " + mealServerId,
                     null );
-            Log.d(LOG_TAG, "contentValues : " +  contentValues);
         }
-        Log.d(LOG_TAG, "ID in upvoteMeal ----------------" + mealServerId);
 
         Intent intent1 = new Intent("mealId.upvote.action");
         intent1.putExtra(EXTRA_MEAL_ID, mealServerId);
@@ -124,12 +120,8 @@ public class MealService extends IntentService {
                             FoodNetworkContract.Meal.COLUMN_SERVER_ID + " = ?",
                             new String[]{String.valueOf(meal.getServerId())},
                             null).getCount() == 0) {
-                        // this meal activity is not in db, add it
-                        Log.d(LOG_TAG, "MEALS: " + meal.toContentValues());
                         ContentValues contentValues = meal.toContentValues();
                         contentValues.put(FoodNetworkContract.Meal.COLUMN_UPLOADED_TO_SERVER, 1);
-
-                        Log.d(LOG_TAG, " ---- "+ contentValues);
 
                         getContentResolver().insert(
                                 FoodNetworkContract.Meal.CONTENT_URI,
