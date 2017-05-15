@@ -86,7 +86,7 @@ public class MealService extends IntentService {
     private void upvoteMeal(Intent intent){
         long mealServerId = intent.getLongExtra(EXTRA_MEAL_ID, -1);
 
-        Cursor cursor = getContentResolver().query(FoodNetworkContract.Meal.CONTENT_URI,
+            Cursor cursor = getContentResolver().query(FoodNetworkContract.Meal.CONTENT_URI,
                 new String[0],
                 FoodNetworkContract.Meal._ID + " = " + mealServerId,
                 null,

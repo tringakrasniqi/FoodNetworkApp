@@ -20,15 +20,18 @@ import android.widget.ListView;
 import gr.academic.city.sdmd.foodnetwork.R;
 import gr.academic.city.sdmd.foodnetwork.db.FoodNetworkContract;
 import gr.academic.city.sdmd.foodnetwork.service.MealTypeService;
+import gr.academic.city.sdmd.foodnetwork.ui.fragment.MealDetailsFragment;
 import gr.academic.city.sdmd.foodnetwork.ui.fragment.MealListFragment;
 
-public class MainActivity extends ToolBarActivity implements LoaderManager.LoaderCallbacks<Cursor>, MealListFragment.OnFragmentInteractionListener {
+public class MainActivity extends ToolBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String[] PROJECTION = {
             FoodNetworkContract.MealType._ID,
             FoodNetworkContract.MealType.COLUMN_NAME,
             FoodNetworkContract.MealType.COLUMN_SERVER_ID
     };
+
+    public static final String LOG_TAG = "MAIN ACTIVITY";
 
     private static final String SORT_ORDER = FoodNetworkContract.MealType.COLUMN_PRIORITY + " ASC";
 
@@ -65,8 +68,7 @@ public class MainActivity extends ToolBarActivity implements LoaderManager.Loade
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Cursor cursor = adapter.getCursor();
                 if (cursor.moveToPosition(position)) {
-                    startActivity(MealsActivity.getStartIntent(MainActivity.this,
-                            cursor.getLong(cursor.getColumnIndexOrThrow(FoodNetworkContract.MealType.COLUMN_SERVER_ID))));
+                    onMealItemSelected(cursor.getLong(cursor.getColumnIndexOrThrow(FoodNetworkContract.MealType.COLUMN_SERVER_ID)));
                 }
             }
         });
@@ -126,19 +128,8 @@ public class MainActivity extends ToolBarActivity implements LoaderManager.Loade
         new FetchMealTypesAsyncTask().execute();
     }
 
-    @Override
     public void onMealItemSelected(long mealId) {
-//        View fragmentContainer = findViewById(R.id.frag_meals_list);
-//        boolean isDualPane = fragmentContainer != null &&
-//                fragmentContainer.getVisibility() == View.VISIBLE;
-//        Log.d("LOG TAG", "MAIN ACTIVITY --- "+isDualPane);
-//        if (isDualPane) {
-//            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//            fragmentTransaction.replace(R.id.frag_meals_list, MealListFragment.newInstance());
-//            fragmentTransaction.commit();
-//        } else {
-            startActivity(MealsActivity.getStartIntent(this, mealId));
-//        }
+        startActivity(MealsActivity.getStartIntent(this, mealId));
     }
 
     private class FetchMealTypesAsyncTask extends AsyncTask<Long, Void, Void> {

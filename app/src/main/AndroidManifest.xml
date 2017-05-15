@@ -6,6 +6,12 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
+    <supports-screens android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:xlargeScreens= "false"
+        android:anyDensity="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -13,9 +19,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+
+
         <activity
             android:name=".ui.activity.MainActivity"
-            android:screenOrientation="portrait">
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -25,7 +34,6 @@
         <activity
             android:name=".ui.activity.MealsActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
             android:parentActivityName=".ui.activity.MainActivity">
 
             <meta-data
@@ -35,7 +43,6 @@
 
         <activity
             android:name=".ui.activity.CreateMealActivity"
-            android:screenOrientation="portrait"
             android:parentActivityName=".ui.activity.MealsActivity">
 
             <meta-data
@@ -45,7 +52,6 @@
 
         <activity
             android:name=".ui.activity.MealDetailsActivity"
-            android:screenOrientation="portrait"
             android:parentActivityName=".ui.activity.MealsActivity">
 
             <meta-data

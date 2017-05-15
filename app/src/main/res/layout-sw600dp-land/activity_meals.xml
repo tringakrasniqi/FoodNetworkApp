@@ -10,7 +10,7 @@
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
         >
@@ -24,5 +24,10 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
 
+    <FrameLayout
+        android:id="@+id/fragment_container_meal"
+        android:layout_toRightOf="@id/swipe_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"/>
 
 </RelativeLayout>

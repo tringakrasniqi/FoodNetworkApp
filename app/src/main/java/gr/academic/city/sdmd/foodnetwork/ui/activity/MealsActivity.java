@@ -33,7 +33,7 @@ import gr.academic.city.sdmd.foodnetwork.ui.fragment.MealListFragment;
 /**
  * Created by trumpets on 4/24/17.
  */
-public class MealsActivity extends ToolBarActivity  implements MealListFragment.OnFragmentInteractionListener{
+public class MealsActivity extends ToolBarActivity implements MealListFragment.OnFragmentInteractionListener, MealDetailsFragment.OnFragmentInteractionListener{
 
     private static final String EXTRA_MEAL_TYPE_SERVER_ID = "meal_type_server_id";
     private static final String TAG_LOG = "MEALS ACTIVITY";
@@ -51,29 +51,23 @@ public class MealsActivity extends ToolBarActivity  implements MealListFragment.
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        Log.d(TAG_LOG, "fragment_meal_list" + findViewById(R.id.fragment_meal_list));
+        Log.d(TAG_LOG, "fragment_container_meal" + findViewById(R.id.fragment_container_meal));
+
+
         this.mealTypeServerId = getIntent().getLongExtra(EXTRA_MEAL_TYPE_SERVER_ID, -1);
 
-        // Check that the activity is using the layout version with
-        // the fragment_container FrameLayout
-        if (findViewById(R.id.fragment_container) != null) {
+        if (findViewById(R.id.fragment_meal_list) != null) {
 
-            // However, if we're being restored from a previous state,
-            // then we don't need to do anything and should return or else
-            // we could end up with overlapping fragments.
             if (savedInstanceState != null) {
                 return;
             }
 
-            // Create a new Fragment to be placed in the activity layout
             MealListFragment firstFragment = MealListFragment.newInstance();
 
-            // In case this activity was started with special instructions from an
-            // Intent, pass the Intent's extras to the fragment as arguments
             firstFragment.setArguments(getIntent().getExtras());
 
-            // Add the fragment to the 'fragment_container' FrameLayout
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, firstFragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_meal_list, firstFragment).commit();
         }
 
     }
@@ -108,7 +102,6 @@ public class MealsActivity extends ToolBarActivity  implements MealListFragment.
         }
 
         Log.d(TAG_LOG, "log: " + mealTypeServerId);
-
     }
 
     @Override
@@ -125,17 +118,25 @@ public class MealsActivity extends ToolBarActivity  implements MealListFragment.
 
     @Override
     public void onMealItemSelected(long id) {
-        View fragmentContainer = findViewById(R.id.fragment_container);
+        Log.d(TAG_LOG, "onMealItemSelected with ID : " + id);
+
+        View fragmentContainer = findViewById(R.id.fragment_container_meal);
         boolean isDualPane = fragmentContainer != null &&
                 fragmentContainer.getVisibility() == View.VISIBLE;
-        Log.d(TAG_LOG, ""+ mealTypeServerId);
-        Log.d(TAG_LOG, ""+isDualPane);
-        if (isDualPane) { //TODO:MEAL DETAILS FRAGMENT
-//            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//            fragmentTransaction.replace(R.id.fragment_container, MealDetailsFragment.newInstance(mealTypeServerId));
-//            fragmentTransaction.commit();
+        Log.d(TAG_LOG, "is dual pane : " + isDualPane);
+        if (isDualPane) {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container_meal, MealDetailsFragment.newInstance(id));
+            fragmentTransaction.commit();
         } else {
-            startActivity(MealDetailsActivity.getStartIntent(this, mealTypeServerId));
+            startActivity(MealDetailsActivity.getStartIntent(this, id));
         }
+
+    }
+
+    @Override
+    public void onFragmentInteraction(long mealId) {
+        Log.d(TAG_LOG, "onFragmentInteraction with mealID : " +mealId);
+
     }
 }

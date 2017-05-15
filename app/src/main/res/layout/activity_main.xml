@@ -22,10 +22,5 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <!--<fragment-->
-        <!--android:id="@+id/frag_meals_list"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:name="gr.academic.city.sdmd.foodnetwork.ui.fragment.MealListFragment"-->
-        <!--tools:layout="@layout/fragment_meal_list"/>-->
+
 </RelativeLayout>
