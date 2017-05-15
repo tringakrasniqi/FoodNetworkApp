@@ -89,7 +89,6 @@ public class MealListFragment extends Fragment implements LoaderManager.LoaderCa
                             cursor.getInt(cursor.getColumnIndexOrThrow(FoodNetworkContract.Meal.COLUMN_MEAL_UPVOTE))));
 
                     if (columnIndex == cursor.getColumnIndexOrThrow(FoodNetworkContract.Meal.COLUMN_PREP_TIME_HOUR) && view instanceof TextView) {
-                        // we have to build a human readable string of prep time
 
                         TextView textView = (TextView) view;
                         textView.setText(getString(
