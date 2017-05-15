@@ -80,40 +80,12 @@ public class MealDetailsActivity extends ToolBarActivity implements MealDetailsF
 
     @Override
     protected int getContentView() {
-        return R.layout.fragment_meal_details;
+        return R.layout.activity_meal_details;
     }
 
     @Override
     protected int getTitleResource() {
         return R.string.meal_details_title;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.meal_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        long mealServerId = 0;
-        Cursor c = getContentResolver().query(FoodNetworkContract.Meal.CONTENT_URI,
-                new String[0],
-                FoodNetworkContract.Meal._ID + " = " + mealId,
-                null,
-                null);
-
-        if (c.moveToFirst()) {
-            mealServerId = c.getLong(c.getColumnIndexOrThrow(FoodNetworkContract.Meal.COLUMN_SERVER_ID));
-        }
-        switch (item.getItemId()) {
-            case R.id.action_upvote:
-                MealService.startUpvoteMeal(this, mealServerId);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     @Override

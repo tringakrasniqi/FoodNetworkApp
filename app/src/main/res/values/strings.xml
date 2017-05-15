@@ -15,6 +15,7 @@
     <string name="required">Required</string>
     <string name="nothing_is_made_in_no_time">Nothing is made in no time! :)</string>
     <string name="upvote_header">Upvotes: </string>
+    <string name="upvote_button">Upvote</string>
 
     <!--Activity Titles-->
     <string name="main_activity_title">Meal Types</string>

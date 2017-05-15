@@ -33,6 +33,7 @@ import java.util.Date;
 
 import gr.academic.city.sdmd.foodnetwork.R;
 import gr.academic.city.sdmd.foodnetwork.db.FoodNetworkContract;
+import gr.academic.city.sdmd.foodnetwork.service.MealService;
 import gr.academic.city.sdmd.foodnetwork.ui.activity.MealDetailsActivity;
 
 
@@ -50,6 +51,7 @@ public class MealDetailsFragment extends Fragment implements LoaderManager.Loade
     private TextView tvCreationDate;
     private TextView tvUpvote;
     private ImageView imgView;
+    private Button upvote_button;
 
     private long mealId;
 
@@ -90,9 +92,26 @@ public class MealDetailsFragment extends Fragment implements LoaderManager.Loade
         tvCreationDate = (TextView) getActivity().findViewById(R.id.tv_meal_creation_date);
         tvUpvote = (TextView) getActivity().findViewById(R.id.tv_upvote);
         imgView = (ImageView) getActivity().findViewById(R.id.image);
+        upvote_button = (Button) getActivity().findViewById(R.id.upvote_button);
 
-        getActivity().getSupportLoaderManager().initLoader(MEAL_LOADER, null, this);
 
+        upvote_button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                long mealServerId = 0;
+                Cursor c = getActivity().getContentResolver().query(FoodNetworkContract.Meal.CONTENT_URI,
+                        new String[0],
+                        FoodNetworkContract.Meal._ID + " = " + mealId,
+                        null,
+                        null);
+
+                if (c.moveToFirst()) {
+                    mealServerId = c.getLong(c.getColumnIndexOrThrow(FoodNetworkContract.Meal.COLUMN_SERVER_ID));
+                }
+                MealService.startUpvoteMeal(getContext(), mealServerId);
+            }
+        });
+
+        getLoaderManager().initLoader(MEAL_LOADER, null, this);
     }
 
 
