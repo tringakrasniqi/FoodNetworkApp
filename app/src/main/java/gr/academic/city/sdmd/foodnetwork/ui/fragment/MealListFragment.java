@@ -1,10 +1,19 @@
 package gr.academic.city.sdmd.foodnetwork.ui.fragment;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.CursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,27 +21,55 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import gr.academic.city.sdmd.foodnetwork.R;
+import gr.academic.city.sdmd.foodnetwork.db.FoodNetworkContract;
 import gr.academic.city.sdmd.foodnetwork.domain.Meal;
+import gr.academic.city.sdmd.foodnetwork.service.MealService;
+import gr.academic.city.sdmd.foodnetwork.ui.activity.MealDetailsActivity;
 import gr.academic.city.sdmd.foodnetwork.ui.activity.MealsActivity;
 
-public class MealListFragment extends Fragment {
+public class MealListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, MealDetailsFragment.OnFragmentInteractionListener{
 
+    private static final String LOG_TAG = "Meal List Fragment";
+    private static final String[] PROJECTION = {
+            FoodNetworkContract.Meal._ID,
+            FoodNetworkContract.Meal.COLUMN_TITLE,
+            FoodNetworkContract.Meal.COLUMN_PREP_TIME_HOUR,
+            FoodNetworkContract.Meal.COLUMN_PREP_TIME_MINUTE,
+            FoodNetworkContract.Meal.COLUMN_MEAL_UPVOTE};
+    private static final String SORT_ORDER = FoodNetworkContract.Meal.COLUMN_MEAL_UPVOTE + " DESC";
+    private static final int MEALS_LOADER = 10;
+    private final static String[] FROM_COLUMNS = {
+            FoodNetworkContract.Meal.COLUMN_TITLE,
+            FoodNetworkContract.Meal.COLUMN_PREP_TIME_HOUR,
+            FoodNetworkContract.Meal.COLUMN_MEAL_UPVOTE};
 
+    private final static int[] TO_IDS = {
+            R.id.tv_meal_title,
+            R.id.tv_meal_prep_time,
+            R.id.tv_meal_upvote};
+
+    private static String ARG_MEAL_TYPE_ID = "arg_meal_type_id";
+    private CursorAdapter adapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private long mealTypeId;
     private OnFragmentInteractionListener mListener;
 
     public MealListFragment() {}
 
-    public static MealListFragment newInstance(long mealTypeId) {
+    public static MealListFragment newInstance() {
         MealListFragment fragment = new MealListFragment();
         return fragment;
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            mealTypeId = getArguments().getLong("meal_type_server_id", -1);
         }
     }
 
@@ -40,16 +77,126 @@ public class MealListFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ListAdapter adapter = new ArrayAdapter<Meal>(getContext(), android.R.layout.simple_list_item_1, MealsActivity.);
+        Log.d(LOG_TAG, "on activity created");
 
-        ListView listView = (ListView) getActivity().findViewById(R.id.lv_students);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        swipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                mListener.onMealItemSelected(id);
+            public void onRefresh() {
+                initiateMealsRefresh();
             }
         });
+
+        adapter = new SimpleCursorAdapter(getContext(), R.layout.item_meal, null, FROM_COLUMNS, TO_IDS, 0);
+        ((SimpleCursorAdapter) adapter).setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+
+                TextView textViewUpvote = (TextView) view;
+                textViewUpvote.setText(getString(
+                        R.string.meal_upvote_w_placeholder,
+                        cursor.getInt(cursor.getColumnIndexOrThrow(FoodNetworkContract.Meal.COLUMN_MEAL_UPVOTE))));
+
+                if (columnIndex == cursor.getColumnIndexOrThrow(FoodNetworkContract.Meal.COLUMN_PREP_TIME_HOUR) && view instanceof TextView) {
+                    // we have to build a human readable string of prep time
+
+                    TextView textView = (TextView) view;
+                    textView.setText(getString(
+                            R.string.prep_time_w_placeholder,
+                            cursor.getInt(columnIndex),  // we know this is prep time hour
+                            cursor.getInt(cursor.getColumnIndexOrThrow(FoodNetworkContract.Meal.COLUMN_PREP_TIME_MINUTE))));
+
+                    return true;
+                } else {
+                    return false;
+                }
+
+
+            }
+        });
+
+        ListView resultsListView = (ListView) getActivity().findViewById(android.R.id.list);
+        resultsListView.setAdapter(adapter);
+        resultsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Cursor cursor = adapter.getCursor();
+                if (cursor.moveToPosition(position)) {
+                    //TODO:START FRAGMENT INSTEAD
+
+//                    startActivity(MealDetailsActivity.getStartIntent(MealsActivity.this,
+//                            cursor.getLong(cursor.getColumnIndexOrThrow(FoodNetworkContract.Meal._ID))));
+                }
+            }
+        });
+
+        getActivity().getSupportLoaderManager().initLoader(MEALS_LOADER, null, this);
+
+        MealService.startFetchMeals(getActivity(), mealTypeId);
+
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.d(LOG_TAG, "ID  = " + id);
+        Log.d(LOG_TAG, "meal type ID = " + mealTypeId);
+        switch (id) {
+            case MEALS_LOADER:
+                return new CursorLoader(getActivity(),
+                        FoodNetworkContract.Meal.CONTENT_URI,
+                        PROJECTION,
+                        FoodNetworkContract.Meal.COLUMN_MEAL_TYPE_SERVER_ID + " = ?",
+                        new String[]{String.valueOf(mealTypeId)},
+                        SORT_ORDER
+                );
+
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        adapter.changeCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        adapter.changeCursor(null);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    private void initiateMealsRefresh() {
+        if (!swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
+
+        new FetchMealsAsyncTask().execute(mealTypeId);
+    }
+
+    private class FetchMealsAsyncTask extends AsyncTask<Long, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Long... params) {
+            MealService.startFetchMeals(getActivity(), params[0]);
+
+            try {
+                // giving the service ample time to finish
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     @Override
@@ -59,9 +206,9 @@ public class MealListFragment extends Fragment {
     }
 
 
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed(long id) {
         if (mListener != null) {
-            mListener.onMealItemSelected(uri);
+            mListener.onMealItemSelected(id);
         }
     }
 
@@ -84,6 +231,6 @@ public class MealListFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onMealItemSelected(Uri uri);
+        void onMealItemSelected(long id);
     }
 }

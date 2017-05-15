@@ -12,6 +12,7 @@ import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -126,18 +127,18 @@ public class MainActivity extends ToolBarActivity implements LoaderManager.Loade
     }
 
     @Override
-    public void onMealItemSelected(Uri uri) {
-        View fragmentContainer = findViewById(R.id.frag_meals_list);
-        boolean isDualPane = fragmentContainer != null &&
-                fragmentContainer.getVisibility() == View.VISIBLE;
-
-        if (isDualPane) {
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.frag_meals_list, MealListFragment.newInstance(studentLocationInList));
-            fragmentTransaction.commit();
-        } else {
-            startActivity(StudentDetailsActivity.getStartIntent(this, studentLocationInList));
-        }
+    public void onMealItemSelected(long mealId) {
+//        View fragmentContainer = findViewById(R.id.frag_meals_list);
+//        boolean isDualPane = fragmentContainer != null &&
+//                fragmentContainer.getVisibility() == View.VISIBLE;
+//        Log.d("LOG TAG", "MAIN ACTIVITY --- "+isDualPane);
+//        if (isDualPane) {
+//            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//            fragmentTransaction.replace(R.id.frag_meals_list, MealListFragment.newInstance());
+//            fragmentTransaction.commit();
+//        } else {
+            startActivity(MealsActivity.getStartIntent(this, mealId));
+//        }
     }
 
     private class FetchMealTypesAsyncTask extends AsyncTask<Long, Void, Void> {
