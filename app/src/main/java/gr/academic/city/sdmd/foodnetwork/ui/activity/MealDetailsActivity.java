@@ -10,12 +10,14 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -130,6 +132,16 @@ public class MealDetailsActivity extends ToolBarActivity implements LoaderManage
         getMenuInflater().inflate(R.menu.meal_menu, menu);
         return true;
     }
+    private void showSnacks() {
+
+        Snackbar.make(findViewById(R.id.coordinator_layout),
+                R.string.msg_snack, Snackbar.LENGTH_LONG).setAction(R.string.undo_upvote, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+             //undoaction
+            }
+        }).show();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -147,6 +159,7 @@ public class MealDetailsActivity extends ToolBarActivity implements LoaderManage
         switch (item.getItemId()) {
             case R.id.action_upvote:
                 MealService.startUpvoteMeal(this, mealServerId);
+                showSnacks();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

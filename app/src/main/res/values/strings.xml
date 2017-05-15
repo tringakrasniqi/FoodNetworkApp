@@ -27,6 +27,10 @@
     <string name="upvote_btn">Upvote</string>
 
     <string name="meal_upvote_w_placeholder">%1$d</string>
+    <!--snackbar -->
+    <string name="msg_snack">Your upvote has been registered</string>
+    <string name="undo_upvote">Undo</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
